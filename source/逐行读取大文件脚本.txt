@@ -1,0 +1,27 @@
+File=/root/lk1.log 
+if [ -f $File ]; then
+ cat $File | while read line
+ do
+  echo $line >> /opt/sxt/tengine-2.3.0/logs/lk.log
+ done
+else
+ echo "File $File not exist."
+f
+
+
+
+
+dir=/home/test/  #输入目录，有很多编码为ISO-8859-1的文件。
+out=/home/out/   #输出目录
+# 记录转换编码的文件名字。把所有已经转换过编码的文件名保存到一个/home/log.txt文件中
+for f in `ls $dir`;do
+	file_path=/home/test/$f
+	#判断该文件是否需要转码,如果编码是:us-ascii
+	chartset=`file -i $file_path | cut -d';' -f2 | cut -d'=' -f2`
+	if [ $chartset == "iso-8859-1" ];then
+		#判断该文件是否已经转换过
+		if ! grep "^$f$" /home/log.txt ;then
+			iconv -f "iso-8859-1" -t "UTF-8" -o /home/out/$f  && echo "$f" >>/home/log.txt
+		fi
+	fi
+done
